@@ -21,6 +21,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
+    UIImage *logoImage = [UIImage imageNamed:@"logo.png"];
     CGRect bounds = self.bounds;
     
     CGPoint center;
@@ -42,6 +43,9 @@
     path.lineWidth = 10;
     [[UIColor lightGrayColor] setStroke];
     [path stroke];
+    
+    CGRect imageRect = CGRectMake(bounds.size.width / 4.0, bounds.size.height / 4.0, bounds.size.width / 2.0, bounds.size.height / 2.0);
+    [logoImage drawInRect:imageRect];
 }
 
 @end
