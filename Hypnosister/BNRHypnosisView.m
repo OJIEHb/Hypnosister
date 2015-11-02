@@ -23,6 +23,7 @@
 {
     UIImage *logoImage = [UIImage imageNamed:@"logo.png"];
     CGRect bounds = self.bounds;
+    CGContextRef currentContext = UIGraphicsGetCurrentContext();
     
     CGPoint center;
     center.x = bounds.origin.x + bounds.size.width / 2.0;
@@ -45,7 +46,34 @@
     [path stroke];
     
     CGRect imageRect = CGRectMake(bounds.size.width / 4.0, bounds.size.height / 4.0, bounds.size.width / 2.0, bounds.size.height / 2.0);
+    
+    
+    CGContextSaveGState(currentContext);
+    
+    UIBezierPath *trianglePath = [[UIBezierPath alloc] init];
+    [trianglePath moveToPoint:CGPointMake(center.x, imageRect.origin.y)];
+    [trianglePath addLineToPoint:CGPointMake(imageRect.origin.x, imageRect.origin.y + imageRect.size.height)];
+    [trianglePath addLineToPoint:CGPointMake(imageRect.origin.x + imageRect.size.width, imageRect.origin.y + imageRect.size.height)];
+    [trianglePath closePath];
+    [trianglePath addClip];
+    CGFloat locations[2] = {0.0, 1.0};
+    CGFloat components[8] = {0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0};
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, locations, 2);
+    
+    CGPoint startPoint = CGPointMake(center.x, imageRect.origin.y);
+    CGPoint endPoint = CGPointMake(center.x, imageRect.origin.y + imageRect.size.height);
+
+    CGContextDrawLinearGradient(currentContext, gradient, startPoint, endPoint, 0);
+    CGGradientRelease(gradient);
+    CGColorSpaceRelease(colorSpace);
+    CGContextRestoreGState(currentContext);
+    CGContextSaveGState(currentContext);
+    CGContextSetShadow(currentContext, CGSizeMake(4, 7), 3);
     [logoImage drawInRect:imageRect];
+    CGContextRestoreGState(currentContext);
+    
 }
 
 @end
